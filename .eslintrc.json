@@ -1,0 +1,22 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react"],
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "func-style": ["error", "declaration"],
+    "prefer-template": ["error"],
+    "prefer-arrow-callback": ["error"]
+  },
+  "ignorePatterns": [
+    "/src/_shared/components/ui/*",
+    "/src/_shared/lib/utils.ts",
+    "/src/_shared/hooks/use-toast.ts",
+    "**/ui/*"
+  ]
+}
