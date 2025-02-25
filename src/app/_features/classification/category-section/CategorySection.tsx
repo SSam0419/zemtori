@@ -1,13 +1,14 @@
+"use client"
 import { Pen } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 import CreateCategoryButton from "@/app/_shared/components/action-button/CreateCategoryButton";
-import UpdateCategoryButton from "@/app/_shared/components/action-button/UpdateCategoryButton";
 import { TreeItem } from "@/app/_shared/components/TreeView";
 
 import CategoryProduct from "./CategorySection.CategoryProduct";
 import CategoryTree from "./CategorySection.CategoryTree";
-import { warn } from "console";
+import { Button } from "@/app/_shared/components/ui/button";
+import { UpdateCategoryFormDialog } from "@/app/_shared/components/form/category-form/UpdateCategoryForm";
 
 function CategorySection({
   categories,
@@ -20,8 +21,35 @@ function CategorySection({
     parentCategoryName: string | null;
   }[];
 }) {
+  const [openEditCategory, setOpenEditCategory] = useState(false)
+  const [editCategory, setEditCategory] = useState<{
+    id: string;
+    categoryName: string;
+    categoryDescription: string;
+    parentCategoryId: string | null;
+
+  } | undefined>(undefined)
   const rootCategories = categories.filter((c) => c.parentCategoryId === null);
   const categoryTree: TreeItem[] = [];
+
+  function EditCateBtn({ cate }: {
+    cate: {
+      id: string;
+      categoryName: string;
+      categoryDescription: string;
+      parentCategoryId: string | null;
+    }
+  }) {
+    return <Button
+      type="button"
+      onClick={
+        () => {
+          setEditCategory(cate)
+          setOpenEditCategory(true)
+        }}
+      size={"sm"}
+    ><Pen /></Button>
+  }
 
   function formTree(category: TreeItem): TreeItem[] {
     // Find children of the current category
@@ -33,16 +61,24 @@ function CategorySection({
         id: child.id,
         name: child.categoryName,
         actions: (
-          <UpdateCategoryButton
-            content={<Pen className="h-4 w-4 hover:cursor-pointer" />}
-            category={{
-              ...child,
-              categoryDescription: child.description,
-              categoryName: child.categoryName,
+          <EditCateBtn
+            cate={{
               id: child.id,
-              parentCategoryId: child.parentCategoryId,
+              categoryName: child.categoryName,
+              categoryDescription: child.description,
+              parentCategoryId: child.parentCategoryId
             }}
           />
+          //<UpdateCategoryButton
+          //  content={<Pen className="h-4 w-4 hover:cursor-pointer" />}
+          //  category={{
+          //    ...child,
+          //    categoryDescription: child.description,
+          //    categoryName: child.categoryName,
+          //    id: child.id,
+          //    parentCategoryId: child.parentCategoryId,
+          //  }}
+          ///>
         ),
         children: formTree({
           id: child.id,
@@ -59,14 +95,12 @@ function CategorySection({
       id: rootCategory.id,
       name: rootCategory.categoryName,
       actions: (
-        <UpdateCategoryButton
-          content={<Pen className="h-4 w-4 hover:cursor-pointer" />}
-          category={{
-            ...rootCategory,
-            categoryDescription: rootCategory.description,
-            categoryName: rootCategory.categoryName,
+        <EditCateBtn
+          cate={{
             id: rootCategory.id,
-            parentCategoryId: rootCategory.parentCategoryId,
+            categoryName: rootCategory.categoryName,
+            categoryDescription: rootCategory.description,
+            parentCategoryId: rootCategory.parentCategoryId
           }}
         />
       ),
@@ -96,6 +130,14 @@ function CategorySection({
           <CategoryProduct />
         </div>
       </div>
+
+
+      {editCategory && <UpdateCategoryFormDialog
+        open={openEditCategory}
+        setOpen={setOpenEditCategory}
+        onSuccess={() => { setOpenEditCategory(false) }}
+        category={editCategory}
+      />}
     </div>
   );
 }

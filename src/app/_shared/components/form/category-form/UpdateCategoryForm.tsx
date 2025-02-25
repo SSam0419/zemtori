@@ -4,6 +4,39 @@ import { useCategoryQuery } from "@/app/_shared/hooks/queries/useCategoryQuery";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import * as FormLayout from "../../layout/form-layout/FormLayout";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
+
+export function UpdateCategoryFormDialog({
+  open, setOpen, onSuccess, category
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onSuccess?: () => void;
+  category: {
+    id: string;
+    categoryName: string;
+    categoryDescription: string;
+    parentCategoryId:
+    | string
+    | null
+    | undefined;
+  };
+}
+) {
+  return <Dialog
+    open={open} onOpenChange={setOpen}
+  >
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Update Category</DialogTitle>
+      </DialogHeader>
+      <UpdateCategoryForm
+        onSuccess={onSuccess}
+        category={category}
+      />
+    </DialogContent>
+  </Dialog>
+}
 
 function UpdateCategoryForm({
   onSuccess,
@@ -15,9 +48,9 @@ function UpdateCategoryForm({
     categoryName: string;
     categoryDescription: string;
     parentCategoryId:
-      | string
-      | null
-      | undefined;
+    | string
+    | null
+    | undefined;
   };
 }) {
   const { shopId } = useParams<{
@@ -36,9 +69,9 @@ function UpdateCategoryForm({
       categoryName: string;
       categoryDescription: string;
       parentCategoryId:
-        | string
-        | undefined
-        | null;
+      | string
+      | undefined
+      | null;
     }>({
       categoryName:
         category.categoryName,
@@ -74,7 +107,7 @@ function UpdateCategoryForm({
           return;
         }
 
-        await updateCategoryMutation.mutate(
+        updateCategoryMutation.mutate(
           {
             formData: {
               ...formData,
@@ -100,6 +133,7 @@ function UpdateCategoryForm({
         isDisabled={isLoading}
       ></FormLayout.FormInput>
       <FormLayout.FormTextarea
+        label="Description"
         formName="description"
         value={
           formData.categoryDescription
@@ -123,18 +157,18 @@ function UpdateCategoryForm({
         options={
           categoryQuery.data
             ? [
-                {
-                  value: "none",
-                  label: "None",
-                },
-                ...categoryQuery.data.map(
-                  (data) => ({
-                    value: data.id,
-                    label:
-                      data.categoryName,
-                  }),
-                ),
-              ]
+              {
+                value: "none",
+                label: "None",
+              },
+              ...categoryQuery.data.map(
+                (data) => ({
+                  value: data.id,
+                  label:
+                    data.categoryName,
+                }),
+              ),
+            ]
             : []
         }
         label="Parent Category (Optional)"
