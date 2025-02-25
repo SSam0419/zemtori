@@ -7,6 +7,7 @@ import { TreeItem } from "@/app/_shared/components/TreeView";
 
 import CategoryProduct from "./CategorySection.CategoryProduct";
 import CategoryTree from "./CategorySection.CategoryTree";
+import { warn } from "console";
 
 function CategorySection({
   categories,
@@ -76,7 +77,6 @@ function CategorySection({
       }), // Recursively form the tree for each root category
     });
   }
-
   return (
     <div className="">
       <div className="flex items-center gap-2 text-lg font-semibold">

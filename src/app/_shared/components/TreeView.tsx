@@ -1,15 +1,9 @@
 "use client";
 
-import { ChevronRight, Minus } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
-// import * as Accordion from "@radix-ui/react-accordion";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/app/_shared/components/ui/collapsible";
 import { cn } from "@/app/_shared/lib/utils";
+import { Button } from "./ui/button";
 
 export interface TreeItem {
   id: string;
@@ -61,40 +55,31 @@ function TreeNode({
   expandAll?: boolean;
 }) {
   const isSelected = item.id === selectedId;
-  const hasChildren = item.children ? item.children?.length > 0 : 0;
-  const [, setIsOpen] = useState(false);
+  //const hasChildren = item.children ? item.children?.length > 0 : 0;
 
   return (
-    <Collapsible
-      open={true}
-      onOpenChange={setIsOpen}
-      className="group/collapsible [&[data-state=open]>button>svg#chevron]:rotate-90"
+    <div
     >
-      <CollapsibleTrigger
+      <Button
+        size={"sm"}
+        variant={isSelected ? "default" : "ghost"}
         onClick={() => onSelect && onSelect(item)}
         className={cn(
-          "w-full",
-          isSelected && "bg-foreground text-background hover:bg-foreground hover:text-background",
+          "w-full justify-start",
         )}
-        asChild
       >
         <div
           className={cn(
-            "flex items-center gap-2 rounded px-4 py-2 hover:bg-slate-100 hover:text-foreground",
-            isSelected && "bg-foreground text-background hover:bg-foreground hover:text-background",
+            "flex items-center gap-1 rounded",
+            isSelected && "bg-foreground text-background",
           )}
         >
-          {hasChildren ? (
-            <ChevronRight className="h-4 w-4 transition-transform" id="chevron" />
-          ) : (
-            <Minus className="h-4 w-4 transition-transform" />
-          )}
           {item.icon}
           <span className="flex-grow truncate text-sm">{item.name}</span>
           {isSelected && <div className="ml-2">{item.actions}</div>}
         </div>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="pl-2">
+      </Button>
+      <div className="ml-4 pl-1 border-l-2">
         {item.children?.map((child) => (
           <TreeNode
             key={child.id}
@@ -105,7 +90,7 @@ function TreeNode({
             expandAll={expandAll}
           />
         ))}
-      </CollapsibleContent>
-    </Collapsible>
+      </div>
+    </div>
   );
 }
